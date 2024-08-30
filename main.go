@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github-user-activity/services"
 	"log"
@@ -9,7 +10,10 @@ import (
 func main() {
 	githubService := services.NewGithub()
 
-	events, err := githubService.GetRecentActivity("kamranahmedse")
+	userActivityCommand := flag.String("username", "kamranahmedse", "GitHub username")
+	flag.Parse()
+
+	events, err := githubService.GetRecentActivity(*userActivityCommand)
 	if err != nil {
 		log.Fatal(err)
 	}
