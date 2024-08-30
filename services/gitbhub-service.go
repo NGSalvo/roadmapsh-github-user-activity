@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github-user-activity/models"
 	"net/http"
+	"time"
 )
 
 type (
@@ -12,14 +13,26 @@ type (
 		GetRecentActivity(userName string) ([]*models.Event, error)
 	}
 
-	githubService struct{}
+	githubService struct {
+		cache map[string]CacheEvent
+	}
+
+	CacheEvent struct {
+		Events []*models.Event
+		TTL    time.Time
+	}
 )
 
 func NewGithub() GithubService {
-	return &githubService{}
+	return &githubService{
+		cache: make(map[string]CacheEvent),
+	}
 }
 
 func (g *githubService) GetRecentActivity(userName string) ([]*models.Event, error) {
+	if cache, ok := g.cache[userName]; ok && time.Since(cache.TTL) < 5*time.Minute {
+		return cache.Events, nil
+	}
 	response, err := http.Get("https://api.github.com/users/" + userName + "/events")
 
 	if err != nil {
@@ -40,6 +53,11 @@ func (g *githubService) GetRecentActivity(userName string) ([]*models.Event, err
 
 	if err != nil {
 		return nil, err
+	}
+
+	g.cache[userName] = CacheEvent{
+		Events: activities,
+		TTL:    time.Now(),
 	}
 
 	return activities, nil
