@@ -64,10 +64,18 @@ func (g *githubService) GetRecentActivity(userName string) ([]*models.Event, err
 }
 
 func (g *githubService) GetRecentActivityByType(userName string, eventType models.EventType) ([]*models.Event, error) {
-	events, err := g.GetRecentActivity(userName)
+	var events []*models.Event
+	var err error
 
-	if err != nil {
-		return nil, err
+	if cache, ok := g.cache[userName]; ok && time.Since(cache.TTL) < 5*time.Minute {
+		events = cache.Events
+		err = nil
+	} else {
+		events, err = g.GetRecentActivity(userName)
+
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	var filteredEvents []*models.Event
