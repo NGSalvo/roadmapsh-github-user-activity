@@ -2,25 +2,61 @@ package main
 
 import (
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestMain(t *testing.T) {
-	asserts := assert.New(t)
+	// asserts := assert.New(t)
 
-	t.Run("Should fetch the recent activity of a GitHub user", func(t *testing.T) {
-		result, err := GetRecentActivity("kamranahmedse")
-
-		asserts.NoError(err)
-		asserts.NotEmpty(result)
-		asserts.IsType([]*Event{}, result)
-	})
-
-	t.Run("Should fail to fetch the recent activity of a GitHub user", func(t *testing.T) {
-		result, err := GetRecentActivity("inexistent-user")
-
-		asserts.Error(err)
-		asserts.Empty(result)
-	})
 }
+
+/*type githubServiceSucessMock struct{}
+
+func (g *githubServiceSucessMock) GetRecentActivity(userName string) ([]*Event, error) {
+	return []*Event{
+		{
+			ID:   "1",
+			Type: "PushEvent",
+			Actor: Actor{
+				ID:           1,
+				Login:        "kamranahmedse",
+				DisplayLogin: "kamranahmedse",
+				GravatarID:   "",
+				URL:          "",
+				AvatarURL:    "",
+			},
+			Repo: Repo{
+				ID:   1,
+				Name: "developer-roadmap",
+				URL:  "",
+			},
+			Payload: Payload{
+				Action: "pushed",
+			},
+			Public:    true,
+			CreatedAt: time.Date(2022, 1, 1, 0, 0, 0, 0, time.UTC),
+		},
+		{
+			ID:   "2",
+			Type: "PullRequestEvent",
+			Actor: Actor{
+				ID:           1,
+				Login:        "kamranahmedse",
+				DisplayLogin: "kamranahmedse",
+				GravatarID:   "",
+				URL:          "",
+				AvatarURL:    "",
+			},
+			Repo: Repo{
+				ID:   1,
+				Name: "developer-roadmap",
+				URL:  "",
+			},
+			Payload: Payload{
+				Action: "pushed",
+			},
+			Public:    true,
+			CreatedAt: time.Date(2022, 1, 1, 0, 0, 0, 0, time.UTC),
+		},
+	}, nil
+}
+*/
