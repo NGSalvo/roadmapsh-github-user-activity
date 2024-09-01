@@ -11,6 +11,7 @@ import (
 type (
 	GithubService interface {
 		GetRecentActivity(userName string) ([]*models.Event, error)
+		GetRecentActivityByType(userName string, eventType models.EventType) ([]*models.Event, error)
 	}
 
 	githubService struct {
